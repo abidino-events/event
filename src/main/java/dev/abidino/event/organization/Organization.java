@@ -1,6 +1,5 @@
 package dev.abidino.event.organization;
 
-import dev.abidino.event.event.Event;
 import dev.abidino.event.user.User;
 
 import javax.persistence.*;
