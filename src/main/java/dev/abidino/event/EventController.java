@@ -1,24 +1,24 @@
-package dev.abidino.event.event;
+package dev.abidino.event;
 
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/event")
-public record EventController(EventService eventService, EventMapper eventMapper) {
+public record EventController(EventService eventService) {
 
     @PostMapping
     EventDto save(@RequestBody EventDto eventDto, @RequestParam Long organizationId) {
-        Event event = eventMapper.toEvent(eventDto);
-        Event savedEvent = eventService.saveWithOrganizationId(event, organizationId);
-        return eventMapper.toEventDto(savedEvent);
+        Event savedEvent = eventService.saveWithOrganizationId(eventDto.toEvent(), organizationId);
+        return savedEvent.toEventDto();
     }
 
     @GetMapping("/{id}")
     EventDto get(@PathVariable Long id) {
         Event event = eventService.findById(id);
-        return eventMapper.toEventDto(event);
+        return event.toEventDto();
     }
 
     @DeleteMapping("/{id}")
@@ -29,12 +29,12 @@ public record EventController(EventService eventService, EventMapper eventMapper
     @PatchMapping("{id}/join")
     EventDto join(@PathVariable Long id) {
         Event event = eventService.join(id);
-        return eventMapper.toEventDto(event);
+        return event.toEventDto();
     }
 
     @GetMapping("/all")
     List<EventDto> allByOrganizationId(@RequestParam Long organizationId, @RequestParam(required = false) EventType eventType) {
         List<Event> eventList = eventService.findAllByOrganizationIdAndEventType(organizationId, eventType);
-        return eventMapper.toEventDto(eventList);
+        return eventList.stream().map(Event::toEventDto).collect(Collectors.toList());
     }
 }

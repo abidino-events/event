@@ -1,15 +1,20 @@
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000/realms/event
   application:
     name: event-service
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
   datasource:
     url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
 server:
-  port: 8083
+  port: 8085
 
 springdoc:
   swagger-ui:
@@ -19,3 +24,9 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+
+client:
+  base-url: http://localhost:4650
+  organization:
+    url: ${client.base-url}/organization
+    value: organization-service
